@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<meta name="keywords" content="d3.js, d3.js Data Join, d3.js Selectors, Tutorial, Javascript, Moon, Moon Phases">
+<meta name="description" content="d3.js Tutorial with Moon Phase Visualizer">
+
+<head>
+	<title>d3.js - A short introduction with Moon Phase Visualizer</title>
+
+	<link rel="stylesheet" href="css/highlightjs/default.css">
+
+	<style>
+		
+		html, body {
+			background: #ffec8b;
+			background: palegoldenrod;
+			color: brown;
+			color: black;
+			font-size: 18px;
+			line-height: 27px;
+			font-family: sans-serif, times;
+		}
+
+		ul,ol li {
+			margin: 7px 0;
+		}
+
+		a {
+			color: blue;
+			text-decoration: none;
+			font-weight: bold;
+		}
+
+			a:hover {
+				text-decoration: underline;
+			}
+
+		section {
+			padding: 15px;
+			margin: 15px;
+			border-bottom: thin solid black;
+		}
+
+		.heading {
+			font-weight: bold;
+		}
+
+		.disclaimer {
+			font-size: 16px;
+			font-style: italic;
+			margin: 5px 0;
+		}
+
+		.legend {
+			fill: #ff00ff;
+			stroke: #ff00ff;
+		}
+
+		.timer {
+			fill: #00ff7f;
+			stroke: #00ff7f;
+		}
+
+		.code {
+			white-space: pre;
+		}
+
+		.code.inline {
+			white-space: pre-wrap;
+			background: #f0f0f0;
+			color: black;
+
+			padding: 3px;
+		}
+
+		.highlight {
+			background: black;
+			color: #00ff7f;
+
+			font-size: 18px;
+
+			padding: 15px;
+			margin: 15px;
+			line-height: 28px;
+
+			border: thin solid #333333;
+		}
+
+		.text-center {
+			text-align: center;
+		}
+
+		#moon-viz {
+			background: black;
+			border: thin solid black;
+		}
+
+		#earth {
+			fill: #000099;
+		}
+
+		#alternate-view {
+			position: absolute; 
+			left: 900px; 
+			width: 400px; 
+			height: 500px; 
+			border: thin solid black;
+			background: black;
+		}
+
+		.continent {
+			fill: green;
+			stroke: green;
+			stroke-width: 3;
+		}
+
+		.bottom.earth {
+			z-index: 1001;
+		}
+
+		.bottom.moon {
+			z-index: 101;
+		}
+
+		.star {
+			stroke-width: 1;
+			fill: white;
+			stroke: white;
+		}
+
+			.star.new {
+				fill: blue;
+				stroke: blue;
+				stroke-width: 2;
+			}
+
+			.star.old {
+				fill: tomato;
+				stroke: tomato;
+				stroke-width: 2;
+			}
+
+		.star.dim {
+			fill: #505050;
+			stroke: #505050;
+		}
+
+		.no-svg {
+			background: red;
+			color: white;
+			text-align: center;
+		}
+
+	</style>
+
+	<script src="js/lib/modernizr-2.6.2.min.js"></script>
+
+</head>
+<body>
+
+	<h1 class="heading text-center"> d3.js - a tiny introduction with Moon Phase Visualizer </h1>
+
+	<svg id="moon-viz">
+		
+		<g id="starCanvas"></g>
+
+		<text x="20" y="40" class="legend">Fig A</text>
+		<text x="770" y="40" class="phase timer"></text>
+
+	</svg>
+
+	<svg id="alternate-view">
+		
+		<text x="350" y="40" class="legend">Fig a</text>
+		<text x="20" y="40" class="phase timer"></text>
+
+
+		<text x="350" y="270" class="legend">Fig b</text>
+		<text x="20" y="270" class="eclipse timer" id="eclipse-timer">Month 1</text> 
+
+		<path id="earth-shadow" style="stroke: grey" />
+		<path id="moon-shadow" style="stroke: grey" />
+	</svg>
+
+	<div id="no-svg"></div>
+
+	<section>
+		
+		<h1 class="heading">About</h1>
+
+		This tutorial aims to give a brief introduction to d3.js with which Moon phase visualizer demo is built. 
+		<ul>
+			<li>To check the actual demo <a href="index.html">go here</a>.</li>
+			<li>Check the <a href="https://github.com/palerdot/moon-phase-visualizer" target="_blank">Github page</a> of this project.</li>
+		</ul>
+
+	</section>
+
+	<section>
+		
+		<h1 class="heading">Introduction</h1>
+
+		This d3 tutorial gives a brief introduction to the following. 
+
+		<ul>
+			<li>d3 Selectors</li>
+			<li>d3 Data Joins</li>
+		</ul>
+
+		The above are just a fraction of the actual d3 library functionalities. The two topics are introduced here because the Moon Phase Visualizer demo is built with a basic usage of above functionalities of d3.js. This tutorial is intentionally short and aimed at just giving a good brief introduction for d3.js beginners.
+
+	</section>
+
+	<section>
+		
+		<h1 class="heading">What is d3.js?</h1>
+
+		<ul>
+			<li>d3.js associates data to an element or group of elements in the html page. Exactly what its definition says - Data Driven Documents.</li>
+			<li>All the resulting complex visualizations (graphs, charts, maps etc) associated with d3.js are the result of how we choose to represent that data.</li>
+		</ul>
+
+	</section>
+
+	<section>
+		
+		<h1 class="heading">d3 Selectors</h1>
+
+		<ul>
+			<li>d3.js helps to select elements from html page using two functions - <span class="code inline">select()</span>, <span class="code inline">selectAll()</span></li>
+			<li><span class="code inline">select()</span> selects only one element. If there are more than one element for the given selector it selects the first one only.</li>
+			<li><span class="code inline">selectAll()</span> selects all the elements for that selector. d3.js uses css style selectors. If you are familiar with selecting elements with jQuery, d3 selectors are almost the same.</li>
+		</ul>
+
+		<div>
+		When you select html element(s) with the above functions, you can do all the fancy things like change its attributes, style etc. For example, in the Moon Phase Visualizer demo, the rotation of moon is just selecting the circle element (moon) and just update the x and y position over the period of the time. 
+		</div>
+		
+<pre>
+<code class="javascript code">			
+	// select the moon using 'select'. 'select' returns only one element
+	var moon = d3.select("#moon"); 
+
+	// calculate the co-ordinates
+	// x = somevalue; y = somevalue;
+
+	// now update the position using our selection
+	moon.attr("cx", x).attr("cy", y);
+
+	// ------------------------------------------------------------------
+
+	// With 'selectAll' we can select all the elements for the selection
+	// Here there are 2 timer elements in the page; returns both
+	var timer = d3.selectAll(".phase.timer"); 
+
+	// calculate the time
+	// time = somevalue;
+
+	// now update 'all' the elements from the 'selectAll'.
+	timer.text( time ); 
+</code>
+</pre>
+
+		<div>
+		But the real power of d3.js is not just selecting random elements, but help associating some data with the elements (before or after selecting the elements) and manipulate the elements with respect to the data associated with the elements. d3.js does this with Data Joins.
+		</div>
+
+	</section>
+
+	<section>
+		
+		<h1 class="heading">d3 Data Joins</h1>
+
+		<p>
+		Data Joins helps us to associate some data (which is given as an array) with html elements. If the data array changes, corresponding html elements can be easily associated or disassociated with the data.  
+		</p>
+
+		<p>
+			
+			Data Joins involve the following
+
+			<ul>
+				<li> <span class="code inline">Selectors</span> - we need some html elements to associate the data. These are got using selectors introduced previously. With Data Joins it is not necessary that the elements have to present already in the page. We will see that in a moment. </li>
+				<li> <span class="code inline">Data Array</span> - the actual data to associate in the form of array. No matter how many elements are present, data is always given as an array. </li>
+				<li><span class="code inline">'Key' function</span> - optional function that describes the relation between the data array and the elements. By default, first element in the data array is associated with the first element, second data with second element and so on; that is index based. We can provide an optional function that explictly returns a 'key' that should be used as a relationship to associate the data in the array with the element.</li>
+				<li> <span class="code inline">enter()</span> & <span class="code inline">append()</span> - If new data is added to the data array, using enter() we can automatically access newly added data. At this point, the new html elements will not be present for this data. By calling append() new html elements can be added for the new data. This is called when our data is more than the html elements.</li>
+				<li> <span class="code inline">exit()</span> & <span class="code inline">remove()</span> - If data is removed from the data array, using exit() we can automatically access html elements for the removed data. With remove() we can remove the html elements associated with the removed data. This is called when html elements are more than our data.</li>
+
+			</ul>
+
+		</p>
+
+		<p>
+			<h3 class="heading"> Star Show with Data Joins</h3>
+
+			The left main screen (Fig A) in the above demo contains number of stars as background. Each star is represented by an svg circle element. Each star has a distinct position in the form of an 'x' and 'y' co-ordinate. The positions are generated randomly. For every few seconds, some stars disappear which will become red before disappearing, and new stars will appear which will be shown as blue. This was done using d3 Data Joins and lets see how its done.
+
+		</p>
+		
+		<ol>
+		<li>
+		
+
+			Our data is represented by a set of (x,y) co-ordinates which will be attributes of an object. Now, we have to display this data as something visual, which is a star with that particular co-ordinates as its position. It is important to remember that we still dont have any circle elements in the page representing the stars.
+
+<pre>
+<code class="javascript code">
+// our data array containing star co-ordinates; initially it will be empty
+var starData = [];
+
+// lets fill the starData with sets of 10 random co-ordinates; Each co-ordinate represent a star position.
+// [ {x: 1, y: 1}, {x: 34, y: 56}, {x: 32, y: 8}, {x: 22, y: 48} ....... ]  // total of 10 sets 
+
+// the holder that will contain all the stars
+var canvas = d3.select("#starCanvas");
+</code>
+</pre>			 
+		
+		
+		</li>
+
+		<li>
+		
+				<ol type="a">
+					
+					<li> 
+
+						Now, let us try to associate the co-ordinates data with circle element 
+
+<pre>
+<code class="javascript code">
+canvas.selectAll("circle") // select the circle elements (0 elements currently)
+		.data( starData ); // bind the data to the circles (10 co-ordinates)
+</code>
+</pre>
+
+						If we had initially 5 circle elements, the previous statement would have bound the first 5 co-ordinates to the 5 circle elements.
+
+						If we see the above statement, we have 0 circle elements. But we have 10 co-ordinates. There are no circles to associate the co-ordinate data. In other words, we have 10 extra co-ordinate data for which we need circle elements to associate with.
+
+					</li>
+					
+					 <li>
+					 	<span class="code inline">enter()</span> & <span class="code inline">append()</span>. Calling <span class="code inline">enter()</span> returns the set of data for which there are no elements associated yet. In this case, all the 10 co-ordinates. Calling <span class="code inline">append("circle")</span> creates new 'circle' elements and associates the data with it. The method <span class="code inline">append()</span> appends elements of whatever tag is given as its argument. Expanding on the previous statement, we have 
+
+<pre>
+<code class="javascript code">
+canvas.selectAll("circle") // select the circle elements (0 elements currently)
+		.data( starData ); // bind the data to the circles (10 co-ordinates)
+		.enter() // gets the new data without elements associated
+		.append("circle") // add the new elements for the new data
+</code>
+</pre>
+
+					 </li>
+
+					 <li>
+					 	
+					 	At this point, we have new circle elements in the html page for each set of co-ordinates. Our aim is to make the co-ordinates as the position of the circle element. SVG circle elements takes the following attributes: <span class="code inline">cx</span> - x position, <span class="code inline">cy</span> - y position, <span class="code inline">r</span> - radius of the circle. Now we have a unique situation. We have associated the co-ordinate data to the circle element. How to tell d3.js to take that data and use it on the html elements as attributes? Let us expand further.
+
+<pre>
+<code class="javascript code">
+canvas.selectAll("circle") // select the circle elements (0 elements currently)
+		.data( starData ); // bind the data to the circles (10 co-ordinates)
+		.enter() // gets the new data without elements associated
+		.append("circle") // add the new elements for the new data
+		.attr("r", 1); // static radius value is used for all elements
+		.attr("cx", function (d) { return d.x; } ) // dynamically takes x position from bound data for this element
+		.attr("cy", function (d) { return d.y; } ) // dynamically takes y position from bound data for this element
+</code>
+</pre>
+
+					 	d3.js has <span class="code inline">attr()</span> methods, that takes a value or a function as second argument. If a value is used, it is used directly. This is done for the <span class="code inline">r</span> attribute. All the stars have a default radius of one. But for the (x,y) positions we need values from our co-ordinates which we associated with the circle. d3.js allows us to use a function as second argument, with our bound data as the argument. So we return our (x, y) value from our co-ordinate object for (cx, cy) attributes respectively.
+
+					 </li>
+
+				</ol>
+		
+		</li>
+
+		<li>
+			Let us remove some stars. For this, we don't have to do ugly stuff like look for circle elements in html page and remove them. By now, we can see that d3.js maintains a close relationship between our data and the corresponding html elements. First we have to remove data from our data array. Then calling <span class="code inline">exit()</span> will return the html elements for which there is no data in our data array. At this point, we have html elements that have no data from our data array. They are not removed yet. We can do something with those extra html elements if we need to before removing them. Only by calling <span class="code inline">remove()</span>, the extra html elements are actually removed.
+
+<pre>
+<code class="javascript code">						
+// let us remove 3 stars from the data Array
+starData = starData.slice(0, starData.length - 3);
+
+canvas.selectAll("circle") // select the circle elements (10 elements currently)
+		.data( starData ); // bind the new data to the circles (7 co-ordinates)
+		.exit() // gets the extra circle elements not bound to new data, in this case last 3
+		// let us change their color to red for 2 seconds before removing them
+		.transition().duration(2000).style("stroke", "red").style("fill", "red")
+		// only now the extra html elements are removed.
+		.remove(); 
+</code>
+</pre>
+
+		</li>
+
+		<li>
+			
+
+			If we decide to add new stars, all we have to do is to update our data array and then let d3.js automatically add html elements from our data using our <span class="code inline">enter()</span> and <span class="code inline">append()</span> which we saw previously.
+
+<pre>
+<code class="javascript code">					
+// let us add 3 stars to our data array
+starData.push( {x: 23, y: 44} );
+starData.push( {x: 33, y: 54} );
+starData.push( {x: 43, y: 24} );
+
+canvas.selectAll("circle") // select the circle elements (7 elements currently)
+		.data( starData ); // bind the new data to the circles (10 co-ordinates)
+		.enter() // gets the extra data without bound html elements (last 3 co-ordinates)
+		.append("circle") // add the new elements for the new data
+		.attr("r", 1); // static radius value is used for all elements
+		.attr("cx", function (d) { return d.x; } ) // dynamically takes x position from bound data for this element
+		.attr("cy", function (d) { return d.y; } ) // dynamically takes y position from bound data for this element
+		.style("stroke", "blue").style("fill", "blue") // initial star color
+		// let us change their color back to white from blue after 2 seconds
+		.transition().duration(2000).style("stroke", "white").style("fill", "white");
+</code>
+</pre>
+
+		</li>
+
+		<li>
+			How to update the existing elements to something we need? For example, if we want to change all the existing star color to 'silver'.
+			In this case there are no additions or deletions. If we do a data join, we will get the existing html elements bound to the current data. Then we can manipulate the existing elements to our wish.
+
+<pre>
+<code class="javascript code">
+canvas.selectAll("circle") // select the circle elements (10 elements currently)
+		.data( starData ); // bind the current data to the circles (10 co-ordinates)
+		// now we have got our existing stars; do whatever we want to do to them
+		.style("stroke", "silver").style("fill", "silver");
+</code>
+</pre>
+
+		Every time Data Join is done, the data is updated with the corresponding html element. For example, if we have changed some of the stars' co-ordinates, previous data join would have updated them. To reflect that change, we need to update their position. Expanding on the previous statement, 
+
+<pre>
+<code class="javascript code">
+// we have updated some of the stars' co-ordinates; So update to their new positions
+canvas.selectAll("circle") // select the circle elements 
+		.data( starData ); // bind the current data to the circles (changed co-ordinates will be updated now)
+		// update the circle elements to new position
+		.attr("cx", function (d) { return d.x; } ) // all stars gets their new x co-ordinate
+		.attr("cy", function (d) { return d.y; } ) // all stars gets their new y co-ordinate
+</code>
+</pre>		
+
+		</li>
+
+
+		<li>
+			It is important to note that we have <b>not used</b> the optional 'key' function in our data binding, since we are using the default index based mapping. That is, first data in the data array should correspond to the first html element and so on. d3.js allows us to define a custom key function to define the relation between our data and the html element. 
+		</li>
+
+		</ol>
+
+	</section>
+
+	<section>
+		
+		<h2 class="heading">Resources</h2>
+
+		<a href="https://github.com/mbostock/d3/wiki/Tutorials" target="_blank">d3.js wiki page</a> gives a lot of interesting resources to check out. Particularly, <a href="http://bost.ocks.org/mike/join/" target="_blank">Thinking with Joins</a> by Michael Bostock (the creator of d3.js) is really great to learn about d3.js data joins.
+
+	</section>
+
+	<section>
+		
+		<h2 class="heading">Feedback</h2>
+
+		Feedbacks and suggestions are greatly appreciated. If you are familiar with Github you can use <a href="">Github issues</a> for any changes or suggestions in this article. Also, you can ping your feedbacks to <b><span class="code inline">initdot@gmail.com</span></b>.
+
+	</section>
+
+	<section>
+			
+			<div class="disclaimer text-center">
+				This demo is currently best viewed in chrome. Tested in Chrome and Firefox.
+			</div>
+
+			<div class="disclaimer text-center">
+				This demo is not to scale. They are not shown with complete scientific accuracy for demonstration purposes.
+			</div>
+
+		</section>
+
+	<script src="js/lib/d3.min.js"></script>
+	<script src="js/d3-moon-viz.js"></script>
+	<script src="js/lib/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+</body>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+<meta name="keywords" content="Moon, Moon Phase, Eclipse, Full Moon, New Moon, Line of Nodes, Solar Eclipse, Lunar Eclipse">
+<meta name="description" content="Moon Phase Visualizer">
+
+<head>
+	<title>Moon Phase Visualizer</title>
+
+	<style>
+		
+		html, body {
+			background: #111111;
+			color: white;
+			font-size: 18px;
+			line-height: 27px;
+			font-family: sans-serif, times;
+		}
+
+		ul li {
+			margin: 7px 0;
+		}
+
+		a {
+			color: blue;
+			text-decoration: none;
+			font-weight: bold;
+		}
+
+			a:hover {
+				text-decoration: underline;
+			}
+
+		section {
+			padding: 15px;
+			margin: 15px;
+			border-bottom: thin solid #333333;
+		}
+
+		.heading {
+			color: silver;
+			font-weight: bold;
+		}
+
+		.disclaimer {
+			font-size: 16px;
+			font-style: italic;
+			margin: 5px 0;
+		}
+
+		.legend {
+			fill: #ff00ff;
+			stroke: #ff00ff;
+		}
+
+		.timer {
+			fill: #00ff7f;
+			stroke: #00ff7f;
+		}
+
+		.highlight {
+			background: black;
+			color: #00ff7f;
+
+			font-size: 18px;
+
+			padding: 15px;
+			margin: 15px;
+			line-height: 28px;
+
+			border: thin solid #333333;
+		}
+
+		.text-center {
+			text-align: center;
+		}
+
+		#moon-viz {
+			background: black;
+			border: thin solid black;
+		}
+
+		#earth {
+			fill: #000099;
+		}
+
+		#alternate-view {
+			position: absolute; 
+			left: 900px; 
+			width: 400px; 
+			height: 500px; 
+			border: thin solid black;
+			background: black;
+		}
+
+		.continent {
+			fill: green;
+			stroke: green;
+			stroke-width: 3;
+		}
+
+		.x.axis path {
+		  display: none;
+		}
+
+		.bottom.earth {
+			z-index: 1001;
+		}
+
+		.bottom.moon {
+			z-index: 101;
+		}
+
+		.star {
+			stroke-width: 1;
+			fill: white;
+			stroke: white;
+		}
+
+			.star.new {
+				fill: blue;
+				stroke: blue;
+				stroke-width: 2;
+			}
+
+			.star.old {
+				fill: tomato;
+				stroke: tomato;
+				stroke-width: 2;
+			}
+
+		.star.dim {
+			fill: #505050;
+			stroke: #505050;
+		}
+
+		.no-svg {
+			background: red;
+			color: white;
+			text-align: center;
+		}
+
+		.glow {
+			color: yellow;
+		}
+
+	</style>
+
+	<script src="js/lib/modernizr-2.6.2.min.js"></script>
+
+</head>
+<body>
+
+	<h1 class="heading text-center">Moon Phase Visualizer</h1>
+
+	<svg id="moon-viz">
+		
+		<g id="starCanvas"></g>
+
+		<text x="20" y="40" class="legend">Fig A</text>
+		<text x="770" y="40" class="phase timer"></text>
+
+	</svg>
+
+	<svg id="alternate-view">
+		
+		<text x="350" y="40" class="legend">Fig a</text>
+		<text x="20" y="40" class="phase timer"></text>
+
+
+		<text x="350" y="270" class="legend">Fig b</text>
+		<text x="20" y="270" class="eclipse timer" id="eclipse-timer">Month 1</text> 
+
+		<path id="earth-shadow" style="stroke: grey" />
+		<path id="moon-shadow" style="stroke: grey" />
+	</svg>
+
+	<div id="no-svg"></div>
+
+	<div id="moon-viz-details" class="moon-viz-details">
+		
+		<div class="highlight text-center">
+		Moon phase visualizer is a simple demo to understand how Moon's phases (and eclipses) occur. 
+		</div>
+
+		<section>
+
+			<p>
+				
+				<h2 class="heading">Moon Phases</h2>
+				
+				<ul>
+					<li>Fig A (main left visual) - shows Moon's position during different phases. It shows the top view of Moon's orbit around Earth.</li>
+					<li>Fig a (top right visual) - shows Moon's shape during different phases for the position in Fig A.</li>
+					<li>The dotted portion of the moon in Fig A shows the side of the moon which is always facing the Earth. This is called Tidal Locking. Tidal Locking occurs because moon's rotation around its axis takes the same time taken for moon's rotation around earth.</li>
+				</ul>
+
+			</p>
+
+			<p>
+				<h2 class="heading">Eclipses</h2>
+
+				<ul>
+					<li>Fig b (bottom left visual)- shows how earth and moon shadows have to coincide with line of nodes (the red line) for eclipses to occur.</li>
+					<li>If Fig b is visualized in 3 dimensional space, the bottom end of line of nodes will be facing towards the viewer, and the top end will be facing away from the viewer. Earth and Moon's shadow in these positions will also be facing towards and away respectively. </li>
+					<li>Moon's orbit around the earth is tilted by an angle of 5.1 degrees. Due to this moon will always miss the earth's shadow passing outside of it except in line of nodes.</li>
+					<li>Lunar Eclipse occurs when earth is between moon and the sun. This occurs only on a full moon day (Day 14 in Fig a).</li>
+					<li>Solar Eclipse occurs when moon is between earth and the sun. This occurs only on a new moon day (Day 29.5 in Fig a).</li>
+					<li>Eclipses occur only in the line of nodes.</li>
+				</ul>
+
+				<div class="highlight text-center">
+					Eclipses happen when lines of nodes (red line in Fig b) co-incides with shadow of earth or moon. Watch the lines of nodes turn green for every few revolutions (approx 3-4) when the shadow of moon and earth coincides with them. If the moon is in full moon position then it is a lunar eclipse; if in new moon position it is a solar eclipse. The part of the shadow shown is called 'umbra' which results in Total Eclipses. There is another component of shadow called 'penumbra' (not shown in the figure) which results in partial eclipses.
+				</div>
+			</p>
+
+		</section>
+
+		<section>
+			
+			<h1 class="heading text-center">Feedback & Contributing</h1>
+
+			<p>
+				Feedbacks, Improvements and Contributions are greatly appreciated. If you are familiar with Github, you can find the source computer program for this demo here. Check out Github issue tracker here for current issues and problems. 
+			</p>
+			<p>
+				If you are not familiar with computer programming or Github, not a problem at all. Mail me at <span class="glow">initdot@gmail.com</span> with your feedbacks and suggestions to improve this demo.
+			</p>
+
+		</section>
+
+		<section>
+			
+			<h1 class="heading text-center">About</h1>
+
+			<div>
+				This demo is built using <a href="http://d3.js.org" target="_blank">d3.js</a>. There is a very brief introduction to d3.js with some of the elements of this demo, which you can check out <a href="d3-moon-viz.html">here</a>.
+			</div>
+
+			
+
+		</section>
+
+		<section>
+			
+			<div class="disclaimer text-center">
+				This demo is currently best viewed in chrome. Tested in Chrome and Firefox.
+			</div>
+
+			<div class="disclaimer text-center">
+				This demo is not to scale. They are not shown with complete scientific accuracy for demonstration purposes.
+			</div>
+
+		</section>
+		
+
+	</div>
+
+	<script src="js/lib/d3.min.js"></script>
+	<script src="js/d3-moon-viz.js"></script>
+
+</body>
